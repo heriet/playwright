@@ -1,0 +1,15 @@
+{%- set local_action=content['local_action'] -%}
+
+- name: {{ content['name'] }}
+  local_action:
+    module: {{ local_action['module'] }}
+    access_key: "{{ local_action['access_key'] }}"
+    secret_access_key: "{{ local_action['secret_access_key'] }}"
+    endpoint: {{ local_action['endpoint'] }}
+    group_name: {{ local_action['group_name'] }}
+    availability_zone: {{ local_action['availability_zone'] }}
+    log_limit: {{ local_action['log_limit'] }}
+    state: {{ local_action['state'] }}
+    purge_ip_permissions: {{ local_action['purge_ip_permissions'] }}
+  tags: {{ content['tags']|dump_yaml(default_flow_style=True)}}
+

@@ -1,0 +1,18 @@
+{%- set local_action=content['local_action'] -%}
+
+- name: {{ content['name'] }}
+  local_action:
+    module: {{ local_action['module'] }}
+    access_key: "{{ local_action['access_key'] }}"
+    secret_access_key: "{{ local_action['secret_access_key'] }}"
+    endpoint: {{ local_action['endpoint'] }}
+    group_name: {{ local_action['group_name'] }}
+    purge_ip_permissions: {{ local_action['purge_ip_permissions'] }}
+    ip_permissions:
+{% filter indent(6,True) -%}
+{%- for ip_permission in local_action['ip_permissions'] -%}
+- {{ ip_permission|dump_yaml(default_flow_style=True) }}
+{%- endfor -%}
+{%- endfilter %}
+  tags: {{ content['tags']|dump_yaml(default_flow_style=True)}}
+
