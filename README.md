@@ -115,7 +115,7 @@ Perhaps you may want to place credential vars in a different place.
 |
 ```
 
-credentials.yml
+- credentials.yml
 
 ```
 ---
@@ -126,7 +126,8 @@ nifcloud_users:
     secret_access_key: <YOUR SECRET ACCESS KEY>
 ```
 
-myplaybook.insp.yml
+- myplaybook.insp.yml
+
 ```
 ---
 
@@ -146,7 +147,7 @@ inspirations:
 playwright find vars_files from `playwright_options.playbooks_dir` (for describe user resources), and vars_files are generated to myplaybook.yml
 
 ```
-$ playwright inspire inspirations/myinspiration.yml > playbooks/myplaybook.yml
+$ playwright inspire myplaybook.insp.yml > playbooks/myplaybook.yml
 ```
 
 ```
