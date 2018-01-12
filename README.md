@@ -1,10 +1,12 @@
 # playwright
 
+[![Build Status](https://travis-ci.org/heriet/playwright.svg?branch=master)](https://travis-ci.org/heriet/playwright)
+
 playbook generator for ansible role nifcloud.
 
 ## Installation
 
-requires Python 2.7 or 3.x
+requires Python 3.x
 
 ```
 $ pip install playwright
@@ -29,6 +31,9 @@ $ pip install .
 
 Create playwrigt config by yml (infomations of resource).
 
+
+- myplaybook.insp.yml
+
 ```
 ---
 
@@ -48,10 +53,12 @@ inspirations:
 Execute `playwright inspire`.
 
 ```
-$ playwright inspire playwrigt.yml > playbook.yml
+$ playwright inspire myplaybook.insp.yml > myplaybook.yml
 ```
 
 It generates playbook for your resources.
+
+- myplaybook.yml
 
 ```
 ---
@@ -81,14 +88,20 @@ It generates playbook for your resources.
 ...
 ```
 
+If you need only output to file, append `-f` option. 
+
+```
+$ playwright inspire -f myplaybook.insp.yml
+myplaybook.yml
+```
+
 ### vars_file
 
 Perhaps you may want to place credential vars in a different place.
 
 ```
 |
-|--inspirations
-|  |--myinspiration.yml
+|--myplaybook.insp.yml
 |
 |--playbooks
 |  |--vars
@@ -102,7 +115,7 @@ Perhaps you may want to place credential vars in a different place.
 |
 ```
 
-credentials.yml
+- credentials.yml
 
 ```
 ---
@@ -113,12 +126,13 @@ nifcloud_users:
     secret_access_key: <YOUR SECRET ACCESS KEY>
 ```
 
-myinspiration.yml
+- myplaybook.insp.yml
+
 ```
 ---
 
 playwright_options:
-  playbook_path: playbooks
+  playbooks_dir: playbooks
 
 vars_files:
   - vars/credentials.yml
@@ -130,10 +144,10 @@ inspirations:
       - module: nifcloud_fw
 ```
 
-playwright find vars_files from `playwright_options.playbook_path` (for describe user resources), and vars_files are generated to myplaybook.yml
+playwright find vars_files from `playwright_options.playbooks_dir` (for describe user resources), and vars_files are generated to myplaybook.yml
 
 ```
-$ playwright inspire inspirations/myinspiration.yml > playbooks/myplaybook.yml
+$ playwright inspire myplaybook.insp.yml > playbooks/myplaybook.yml
 ```
 
 ```
@@ -165,6 +179,13 @@ $ playwright inspire inspirations/myinspiration.yml > playbooks/myplaybook.yml
 
 ### Config File
 
+#### playwright_options
+
+- playbooks_dir
+  - output playbook directory if `-f` option appended. also referred to when configured `var_files` path.
+- playbook_filename
+  - output playbook filename if `-f` option appended. default is same name as inspiration config file.
+
 #### vars
 
 #### vars_files
@@ -177,6 +198,7 @@ inspirations:
     user: <YOUR USER ID>
     regions:
       - name: jp-east-1
+    role_nifcloud: ../my_role_dir/nifcloud
     modules:
       - module: nifcloud_fw
 ```
@@ -198,6 +220,10 @@ inspirations:
 
 If regions sets 'all' or not defined, playwright call `DescribeRegions` to configure regions.
 
+#### role_nifcloud
+
+path of role nifcloud. default: `nifcloud`
+
 #### modules
 
 ##### nifcloud_fw
@@ -206,7 +232,10 @@ If regions sets 'all' or not defined, playwright call `DescribeRegions` to confi
     modules:
       - module: nifcloud_fw
         describe_params:
-          GroupName.1: jupyterlab
+          GroupName.1: myfw
+        includes:
+          - key: groupName
+            regexp: ^my
         excludes:
           - key: groupName
             regexp: e\d+aut
@@ -214,5 +243,7 @@ If regions sets 'all' or not defined, playwright call `DescribeRegions` to confi
 
 - describe_params
   - nifcloud_fw module calls `DescribeSecurityGroups`. `describe_params` are additional parameter for `DescribeSecurityGroups`.
-- excrudes
+- includes
+  - If it matches the condition of include in the response of `DescribeSecurityGroups`, not matched fw will not generate playbook task.
+- excludes
   - If it matches the condition of exclude in the response of `DescribeSecurityGroups`, matched fw will not generate playbook task.

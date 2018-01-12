@@ -1,4 +1,5 @@
 import os
+import re
 
 from future.moves.collections import OrderedDict
 
@@ -62,6 +63,7 @@ class InspiredPlaybook():
 
         template = env.get_template('default.playbook.yml.j2')
         renderd = template.render(
+                playwright_options=self.config.playwright_options,
                 vars_groups=vars_groups,
                 vars_files=self.config.vars_files,
                 roles_groups=roles_groups,
@@ -69,6 +71,16 @@ class InspiredPlaybook():
         )
 
         return renderd
+
+    def generate_output_path(self):
+        playbook_filename = self.config.get_option('playbook_filename')
+        if not playbook_filename:
+            config_file = os.path.basename(self.config.config_path)
+            config_name = re.sub(r'\..*', '', config_file)  # remove ext
+            playbook_filename = "{}.yml".format(config_name)
+
+        playbook_path = os.path.join(self.config.playbooks_dir, playbook_filename)
+        return playbook_path
 
     def _render_nodes(self, nodes):
         renders = [task.render() for task in nodes]
