@@ -85,9 +85,11 @@ class NifcloudPlayhouse():
                 self.user.regions.append(region)
 
     def _genelate_role_nifcloud(self):
+        role_nifcloud = self.inspiration['role_nifcloud'] if 'role_nifcloud' in self.inspiration else 'nifcloud'
+
         role = InspiredRole()
         role.content = OrderedDict((
-            ('role', 'nifcloud'),
+            ('role', role_nifcloud),
             ('tags', ['role_nifcloud']),
             ('when', 'nifcloud_role_exec is defined and nifcloud_role_exec')
         ))

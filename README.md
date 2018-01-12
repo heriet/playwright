@@ -197,6 +197,7 @@ inspirations:
     user: <YOUR USER ID>
     regions:
       - name: jp-east-1
+    role_nifcloud: ../my_role_dir/nifcloud
     modules:
       - module: nifcloud_fw
 ```
@@ -217,6 +218,10 @@ inspirations:
 ```
 
 If regions sets 'all' or not defined, playwright call `DescribeRegions` to configure regions.
+
+#### role_nifcloud
+
+path of role nifcloud. default: `nifcloud`
 
 #### modules
 
