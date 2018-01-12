@@ -32,7 +32,7 @@ class NifcloudModuleFw():
             region = NifcloudRegion(region_name)
             endpoint = ComputingConnection.generate_endpoint(region)
 
-            target_fw_groups = [fw_groups for fw_groups in fw_groups if not self._is_exclude(fw_groups)]
+            target_fw_groups = [fw_group for fw_group in fw_groups if self._is_target(fw_group)]
 
             for fw_group in target_fw_groups:
                 task = self._generate_group_task(endpoint, fw_group)
@@ -174,6 +174,33 @@ class NifcloudModuleFw():
 
         return task
 
+    def _is_target(self, target):
+        is_include = self._is_include(target)
+        is_exclude = self._is_exclude(target)
+
+        return is_include and not is_exclude
+
+    def _is_include(self, target):
+        if 'includes' not in self._module_config:
+            return True
+
+        includes = self._module_config['includes']
+
+        for include in includes:
+            if include['key'] not in target:
+                continue
+
+            value = target[include['key']]
+
+            if not isinstance(value, str):
+                raise PlaywrightUnsupportedError('include supports only str')
+
+            regexp = re.compile(include['regexp'])
+            if re.search(regexp, value):
+                return True
+
+        return False
+
     def _is_exclude(self, target):
         if 'excludes' not in self._module_config:
             return False
@@ -187,7 +214,7 @@ class NifcloudModuleFw():
             value = target[exclude['key']]
 
             if not isinstance(value, str):
-                raise PlaywrightUnsupportedError('exclude suppots only str')
+                raise PlaywrightUnsupportedError('exclude supports only str')
 
             regexp = re.compile(exclude['regexp'])
             if re.search(regexp, value):

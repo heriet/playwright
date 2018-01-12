@@ -232,6 +232,9 @@ path of role nifcloud. default: `nifcloud`
       - module: nifcloud_fw
         describe_params:
           GroupName.1: myfw
+        includes:
+          - key: groupName
+            regexp: ^my
         excludes:
           - key: groupName
             regexp: e\d+aut
@@ -239,5 +242,7 @@ path of role nifcloud. default: `nifcloud`
 
 - describe_params
   - nifcloud_fw module calls `DescribeSecurityGroups`. `describe_params` are additional parameter for `DescribeSecurityGroups`.
-- excrudes
+- includes
+  - If it matches the condition of include in the response of `DescribeSecurityGroups`, not matched fw will not generate playbook task.
+- excludes
   - If it matches the condition of exclude in the response of `DescribeSecurityGroups`, matched fw will not generate playbook task.
