@@ -1,5 +1,7 @@
 # playwright
 
+[![Build Status](https://travis-ci.org/heriet/playwright.svg?branch=master)](https://travis-ci.org/heriet/playwright)
+
 playbook generator for ansible role nifcloud.
 
 ## Installation
