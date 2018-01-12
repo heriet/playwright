@@ -25,6 +25,10 @@ class NifcloudModuleFw():
 
         for region_name in region_names:
             fw_groups = self._resources[region_name]
+
+            if not fw_groups:
+                continue
+
             region = NifcloudRegion(region_name)
             endpoint = ComputingConnection.generate_endpoint(region)
 
