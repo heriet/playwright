@@ -29,6 +29,9 @@ $ pip install .
 
 Create playwrigt config by yml (infomations of resource).
 
+
+- myplaybook.insp.yml
+
 ```
 ---
 
@@ -48,10 +51,12 @@ inspirations:
 Execute `playwright inspire`.
 
 ```
-$ playwright inspire playwrigt.yml > playbook.yml
+$ playwright inspire myplaybook.insp.yml > myplaybook.yml
 ```
 
 It generates playbook for your resources.
+
+- myplaybook.yml
 
 ```
 ---
@@ -81,14 +86,20 @@ It generates playbook for your resources.
 ...
 ```
 
+If you need only output to file, append `-f` option. 
+
+```
+$ playwright inspire -f myplaybook.insp.yml
+myplaybook.yml
+```
+
 ### vars_file
 
 Perhaps you may want to place credential vars in a different place.
 
 ```
 |
-|--inspirations
-|  |--myinspiration.yml
+|--myplaybook.insp.yml
 |
 |--playbooks
 |  |--vars
@@ -113,12 +124,12 @@ nifcloud_users:
     secret_access_key: <YOUR SECRET ACCESS KEY>
 ```
 
-myinspiration.yml
+myplaybook.insp.yml
 ```
 ---
 
 playwright_options:
-  playbook_path: playbooks
+  playbooks_dir: playbooks
 
 vars_files:
   - vars/credentials.yml
@@ -130,7 +141,7 @@ inspirations:
       - module: nifcloud_fw
 ```
 
-playwright find vars_files from `playwright_options.playbook_path` (for describe user resources), and vars_files are generated to myplaybook.yml
+playwright find vars_files from `playwright_options.playbooks_dir` (for describe user resources), and vars_files are generated to myplaybook.yml
 
 ```
 $ playwright inspire inspirations/myinspiration.yml > playbooks/myplaybook.yml
@@ -164,6 +175,13 @@ $ playwright inspire inspirations/myinspiration.yml > playbooks/myplaybook.yml
 ## Reference
 
 ### Config File
+
+#### playwright_options
+
+- playbooks_dir
+  - output playbook directory if `-f` option appended. also referred to when configured `var_files` path.
+- playbook_filename
+  - output playbook filename if `-f` option appended. default is same name as inspiration config file.
 
 #### vars
 
@@ -206,7 +224,7 @@ If regions sets 'all' or not defined, playwright call `DescribeRegions` to confi
     modules:
       - module: nifcloud_fw
         describe_params:
-          GroupName.1: jupyterlab
+          GroupName.1: myfw
         excludes:
           - key: groupName
             regexp: e\d+aut
