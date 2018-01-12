@@ -1,5 +1,6 @@
 import click
 
+from playwright import __version__
 from playwright.config import PlaywrightConfig
 from playwright.error import PlaywrightUnsupportedError
 from playwright.inspired import InspiredPlaybook
@@ -35,6 +36,11 @@ def inspire(output, inspiration_path):
 def _output_playbook(playbook):
     playbook_content = playbook.render()
     click.echo(playbook_content)
+
+
+@cli.command()
+def version():
+    click.echo(__version__)
 
 
 if __name__ == '__main__':
