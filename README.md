@@ -4,7 +4,7 @@ playbook generator for ansible role nifcloud.
 
 ## Installation
 
-requires Python 2.7 or 3.x
+requires Python 3.x
 
 ```
 $ pip install playwright
