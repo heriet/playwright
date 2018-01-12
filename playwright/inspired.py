@@ -63,6 +63,7 @@ class InspiredPlaybook():
 
         template = env.get_template('default.playbook.yml.j2')
         renderd = template.render(
+                playwright_options=self.config.playwright_options,
                 vars_groups=vars_groups,
                 vars_files=self.config.vars_files,
                 roles_groups=roles_groups,
