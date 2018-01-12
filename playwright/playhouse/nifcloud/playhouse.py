@@ -3,7 +3,7 @@ from future.moves.collections import OrderedDict
 from playwright.error import PlaywrightError, PlaywrightUnsupportedError
 from playwright.inspired import Inspired, InspiredRole
 from playwright.playhouse.nifcloud.model import NifcloudUser
-from playwright.playhouse.nifcloud.module import NifcloudModuleFw
+from playwright.playhouse.nifcloud.module import NifcloudModuleFw, NifcloudModuleInstance
 
 from sleety import computing
 from sleety.computing.connection import ComputingConnection
@@ -97,13 +97,18 @@ class NifcloudPlayhouse():
 
     def _generate_module_tasks(self, target_module):
         module_id = target_module['module']
+        moduleCls = None
 
         # TODO mapping module
         if module_id == 'nifcloud_fw':
-            module = NifcloudModuleFw(self, target_module)
-            return module.inspire_tasks()
+            moduleCls = NifcloudModuleFw
+        elif module_id == 'nifcloud':
+            moduleCls = NifcloudModuleInstance
+        else:
+            raise PlaywrightUnsupportedError('unsupported module: {}'.format(module_id))
 
-        raise PlaywrightUnsupportedError('unsupported module: {}'.format(module_id))
+        module = moduleCls(self, target_module)
+        return module.inspire_tasks()
 
     def create_connection(self, region, timeout=60, request_interval=1, endpoint=None):
         access_key = self.user.access_key
