@@ -76,7 +76,7 @@ class NifcloudPlayhouse():
             default_region = self.inspiration['regions'] if 'default_region' in self.inspiration else 'jp-east-1'
 
             region = NifcloudRegion(default_region)
-            conn = self.create_connection(self.user.access_key, self.user.secret_access_key, region)
+            conn = self.create_connection(region)
             desc_regions = computing.region.describe_regions(conn)
 
             for desc_region in desc_regions:
