@@ -157,8 +157,9 @@ class NifcloudModuleFw():
                 x.get('in_out', ''),
                 x.get('from_port', ''),
                 x.get('to_port', ''),
-                x.get('cidr_ip', ''),
+                x.get('description', ''),
                 x.get('group_name', ''),
+                x.get('cidr_ip', ''),
             )
         )
 
