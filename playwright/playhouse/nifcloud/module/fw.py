@@ -34,12 +34,14 @@ class NifcloudModuleFw():
 
             target_fw_groups = [fw_group for fw_group in fw_groups if self._is_target(fw_group)]
 
-            for fw_group in target_fw_groups:
+            sorted_fw_groups = self._sort_fw_groups(target_fw_groups)
+
+            for fw_group in sorted_fw_groups:
                 task = self._generate_group_task(endpoint, fw_group)
                 if task:
                     tasks.append(task)
 
-            for fw_group in target_fw_groups:
+            for fw_group in sorted_fw_groups:
                 task = self._generate_ip_permissions_task(endpoint, fw_group)
                 if task:
                     tasks.append(task)
@@ -63,6 +65,9 @@ class NifcloudModuleFw():
         desc_fw = computing.fw.describe_fw_groups(conn, params)
 
         return desc_fw
+
+    def _sort_fw_groups(self, fw_groups):
+        return sorted(fw_groups, key=lambda x: x.get('groupName'))
 
     def _generate_group_task(self, endpoint, fw_group):
         user = self._playhouse.user
@@ -145,6 +150,18 @@ class NifcloudModuleFw():
 
                 task_ip_permissions.append(task_ip_permission)
 
+        sorted_task_ip_permission = sorted(
+            task_ip_permissions,
+            key=lambda x: (
+                x.get('ip_protocol'),
+                x.get('in_out'),
+                x.get('from_port'),
+                x.get('to_port'),
+                x.get('cidr_ip'),
+                x.get('group_name'),
+            )
+        )
+
         user = self._playhouse.user
         access_key = user.get_playbook_vars('access_key')
         secret_access_key = user.get_playbook_vars('secret_access_key')
@@ -167,7 +184,7 @@ class NifcloudModuleFw():
                 ('endpoint', endpoint),
                 ('group_name', fw_group['groupName']),
                 ('purge_ip_permissions', True),
-                ('ip_permissions', task_ip_permissions),
+                ('ip_permissions', sorted_task_ip_permission),
             ))),
             ('tags', tags),
         ))
