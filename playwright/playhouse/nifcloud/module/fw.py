@@ -21,7 +21,7 @@ class NifcloudModuleFw():
         tasks = []
 
         self._resources = self._extract_resources()
-        region_names = self._resources.keys()
+        region_names = sorted(self._resources.keys())
 
         for region_name in region_names:
             fw_groups = self._resources[region_name]
