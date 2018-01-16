@@ -67,7 +67,7 @@ class NifcloudModuleFw():
         return desc_fw
 
     def _sort_fw_groups(self, fw_groups):
-        return sorted(fw_groups, key=lambda x: x.get('groupName'))
+        return sorted(fw_groups, key=lambda x: x.get('groupName', ''))
 
     def _generate_group_task(self, endpoint, fw_group):
         user = self._playhouse.user
@@ -153,12 +153,12 @@ class NifcloudModuleFw():
         sorted_task_ip_permission = sorted(
             task_ip_permissions,
             key=lambda x: (
-                x.get('ip_protocol'),
-                x.get('in_out'),
-                x.get('from_port'),
-                x.get('to_port'),
-                x.get('cidr_ip'),
-                x.get('group_name'),
+                x.get('ip_protocol', ''),
+                x.get('in_out', ''),
+                x.get('from_port', ''),
+                x.get('to_port', ''),
+                x.get('cidr_ip', ''),
+                x.get('group_name', ''),
             )
         )
 
